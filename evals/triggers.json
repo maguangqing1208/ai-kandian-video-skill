@@ -1,0 +1,9 @@
+{
+  "skill": "ai-kandian-video",
+  "test_cases": [
+    {"input": "生成今天的AI看点视频", "should_trigger": true},
+    {"input": "做一版暗黑科技风格的抖音科普视频", "should_trigger": true},
+    {"input": "第35秒画面切换再提前0.5秒", "should_trigger": true},
+    {"input": "帮我写一个普通的Word文档", "should_trigger": false}
+  ]
+}

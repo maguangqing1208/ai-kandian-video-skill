@@ -1,0 +1,20 @@
+{
+  "skill": "ai-kandian-video",
+  "test_cases": [
+    {
+      "name": "daily_briefing_to_video",
+      "input": "根据今天的AI简报生成抖音科普视频，暗黑科技风格",
+      "assertions": ["Produces 9:16 video", "Uses real materials only", "Includes all topics", "Ends with 谢谢观看"]
+    },
+    {
+      "name": "precise_timing_adjust",
+      "input": "第16秒的画面切换再往后延1.5秒，其他不变",
+      "assertions": ["Only modifies the specified transition", "Keeps speech and other cuts identical"]
+    },
+    {
+      "name": "subtitle_punctuation",
+      "input": "字幕中的标点符号用空格代替",
+      "assertions": ["SRT punctuation replaced by spaces", "FontSize=11 bottom alignment"]
+    }
+  ]
+}
