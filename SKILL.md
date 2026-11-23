@@ -1,6 +1,6 @@
 ---
 name: ai-kandian-video
-description: "Generate daily Douyin/TikTok AI popular-science videos from AI briefings. Use when creating or editing AI看点 videos, Douyin科普 videos, or dark-tech style short videos with Mandarin voiceover."
+description: "Generate daily Douyin/TikTok AI popular-science videos from AI briefings. Use when creating or editing AI看点 videos, Douyin科普 videos, or dark-tech style short videos with Mandarin voiceover. Always extract images from the uploaded briefing and fetch real external visuals."
 type: workflow
 lifecycle: active
 ---
@@ -19,12 +19,15 @@ Create professional yet engaging 9:16 vertical Douyin videos from daily AI brief
 | Subtitles | Bottom placement, FontSize=11, ~15 chars/line wrap, BorderStyle=4, MarginV=40, side margins 40. Replace punctuation with spaces |
 | Voice | Standard Mandarin (prefer Orion male). Match user's personal audio timbre when reference provided. End with "谢谢观看" |
 | Framing | 9:16 vertical, safe-area padding for Douyin mobile playback |
-| Materials | Prefer briefing images + real web materials. Animate real screenshots with subtle Ken Burns / motion for silent inserts |
+| Materials | **Must** use images from the uploaded briefing file + real external web materials. Animate real screenshots with subtle Ken Burns / motion for silent inserts |
 
 ## Production Workflow
 
-1. **Parse briefing**
-   - Extract all topics (usually 5).
+1. **Parse briefing & extract embedded images**
+   - User uploads daily AI briefing (usually .docx).
+   - Extract all text topics (usually 5).
+   - **Extract all embedded images** from the docx (use python-docx or unzip + extract media/).
+   - Map extracted images to corresponding topics.
    - Expand key AI terms with short definitions (Lean, Frostbite, Quaise, etc.).
    - Write concise Mandarin script covering all topics in one continuous narration.
 
@@ -37,14 +40,18 @@ Create professional yet engaging 9:16 vertical Douyin videos from daily AI brief
    - Force wrap at ~15 characters.
    - Replace all Chinese/English punctuation with spaces.
    - Bottom alignment, FontSize=11, MarginV=40, MarginL/R=40, BorderStyle=4, white text with dark box.
+   - Align precisely to voice timestamps.
 
-4. **Source real visuals**
-   - Search for authentic images/screenshots related to each topic (Terence Tao / Lean, Anthropic IPO charts, Frostbite diagrams, Quaise drilling, data centers, etc.).
-   - Create reusable dark-tech 9:16 workstation background once.
-   - Animate real screenshots into short silent B-roll clips (Ken Burns / subtle motion) for inserts. Never invent fake interfaces.
+4. **Source real visuals (briefing + external)**
+   - **Priority 1**: Use images extracted from the uploaded briefing file. Display them on the workstation.
+   - **Priority 2**: Search external real materials with `web_search` / `search_images` for each topic (Terence Tao blog, Lean proof screenshots, Anthropic IPO charts, Frostbite CPU diagrams, Quaise drilling rigs, data center photos, etc.).
+   - Download authentic screenshots / photos only. Never invent fake interfaces or numbers.
+   - Create reusable dark-tech 9:16 workstation background once (black + gray + purple-blue).
+   - Animate real screenshots into short silent B-roll clips (Ken Burns / subtle motion via generate_video I2V) for inserts.
 
 5. **Assemble visual base**
    - Fixed workstation background throughout.
+   - Show briefing-extracted images and external real materials inside the workstation.
    - Intercut real-material inserts at topic changes.
    - Use crossfade transitions (0.3s).
    - Default pacing: hold each topic long enough to match narration. Adjust individual transition points only when user specifies exact seconds (e.g., "delay 16s transition by 1.5s", "advance 35s by 2s").
@@ -65,6 +72,7 @@ Create professional yet engaging 9:16 vertical Douyin videos from daily AI brief
 - Subtitle style: `FontName=Noto Sans CJK SC,FontSize=11,PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,BackColour=&H80000000,BorderStyle=4,Outline=1,Shadow=0,MarginL=40,MarginR=40,MarginV=40,Alignment=2,Bold=1`
 - Transitions: xfade fade 0.3s
 - Silent inserts: real screenshot + subtle motion (generate_video I2V)
+- Image extraction: from uploaded .docx media folder or python-docx
 
 ## Common Adjustment Patterns
 
@@ -74,10 +82,11 @@ Create professional yet engaging 9:16 vertical Douyin videos from daily AI brief
 | "第N秒画面切换延后/提前 M 秒" | Freeze or trim only at that timestamp; keep all other cuts identical |
 | "字幕太大/位置不对" | Adjust FontSize / MarginV only |
 | "标点换成空格" | sed replace punctuation in SRT before mux |
-| "用真实素材插播" | Search real images → animate → intercut, style-locked |
+| "用真实素材插播" | Extract briefing images first, then search external real images → animate → intercut, style-locked |
+| "改成YouTube版" | Scale/pad or crop to 16:9 (1920x1080), offer both with-black-bars and no-black-bars versions |
 
 ## Output Naming
 
-`YYYYMMDD_AI看点_描述.mp4` (e.g. `20261121_AI看点_35秒再提前0.5秒版.mp4`)
+`YYYYMMDD_AI看点_描述.mp4` (e.g. `20261121_AI看点_本周结尾版.mp4`)
 
-Always deliver the final mp4 for Douyin preview.
+Always deliver the final mp4 for Douyin preview. Offer YouTube 16:9 version on request.
